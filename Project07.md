@@ -22,7 +22,8 @@ A Typical 3 Tier Server Architecture. Tier 1—Web Server, Tier 2—Application 
 
 We have to launch 4 instances ( 1-3 Web server  & 1 Database server) on RHEL Linux 8 and 1 instance on ubuntu
 
-![createservers](https://github.com/Lummysloane/Devops-Project/assets/131771280/d8c18211-2bb7-4d9b-a6f7-1a7789a0202c)
+![createservers](https://github.com/Lummysloane/Devops-projects/assets/131771280/914777bb-e3df-455d-a62c-896a014ef45a)
+
 
 We have to create EBS volume and must make sure it is in the same availability zone as the instance we want to attach the EBS volume to.
 
