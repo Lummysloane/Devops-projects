@@ -11,3 +11,5 @@ A load balancer acts as the “traffic cop” sitting in front of your servers a
 ## CONFIGURE APACHE AS A LOAD BALANCER
 
 The first thing we need to do is create an ubuntu server EC2 instance
+
+![Alt text](createservers.png)
