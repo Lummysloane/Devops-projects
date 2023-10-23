@@ -27,29 +27,29 @@ We have to launch 4 instances ( 1-3 Web server  & 1 Database server) on RHEL Lin
 
 We have to create EBS volume and must make sure it is in the same availability zone as the instance we want to attach the EBS volume to.
 
-![disk123](https://github.com/Lummysloane/Devops-Project/assets/131771280/9f05762b-2e62-49bb-a52e-d5bf617274f1)
+![disk123](https://github.com/Lummysloane/Devops-projects/assets/131771280/715b2706-d7f6-4047-9d90-ac221bf0447d)
 
 We will use the gdisk to create partition for all the 3 disk
 
 `sudo gdisk /dev/xvdf` 
 
-![gdisk1](https://github.com/Lummysloane/Devops-Project/assets/131771280/e82f557c-9fe6-4711-a3fb-342438fa3d19)
+![gdisk1](https://github.com/Lummysloane/Devops-projects/assets/131771280/4b375229-6de0-4a82-8f9e-c909e4fda48b)
 
 `sudo gdisk /dev/xvdg`
 
-![gdisk2](https://github.com/Lummysloane/Devops-Project/assets/131771280/9b3b8328-1f9f-4fd8-bff7-3bf20e56f9e8)
+![gdisk2](https://github.com/Lummysloane/Devops-projects/assets/131771280/d0d7dccf-2a6e-49de-b078-3902af530763)
 
 `sudo gdisk /dev/xvdh`
 
-![gdisk3](https://github.com/Lummysloane/Devops-Project/assets/131771280/b05e1317-3eee-4eb1-a4fa-eaa3e79c393d)
+![gdisk3](https://github.com/Lummysloane/Devops-projects/assets/131771280/cc73af30-217b-4520-ad59-30e3f71bf721)
 
 When we run command `lsblk`, then we will see all have been partitioned as seen below:
 
-![partitionlsblk](https://github.com/Lummysloane/Devops-Project/assets/131771280/338ff524-976a-44cc-9e2f-73924779ec74)
+![partitionlsblk](https://github.com/Lummysloane/Devops-projects/assets/131771280/807b6fa0-6b2e-4baf-a882-331cfae5ffdc)
 
 We have to install lvm2 by running his command: `sudo yum install lvm2 -y`
 
-![installlvm2](https://github.com/Lummysloane/Devops-Project/assets/131771280/ac83c048-3fa7-4e83-9669-5e7eb46f7612)
+![installlvm2](https://github.com/Lummysloane/Devops-projects/assets/131771280/ae111226-59f9-42ad-bbfd-96271c3a3de1)
 
 Run command `sudo lvmdiskscan` to check for available partitions
 
@@ -61,7 +61,7 @@ We have to create physical volumes used by lvm. Run command:
 
 `sudo pvcreate /dev/xvdh1`
 
-![pvcreatenfs](https://github.com/Lummysloane/Devops-Project/assets/131771280/a7334302-e051-41f2-8f6e-6381ffea0ca0)
+![pvcreatenfs](https://github.com/Lummysloane/Devops-projects/assets/131771280/8615aa0c-22cc-475c-94f0-fce5ef97609b)
 
 Run command `sudo pvs` to check if the physical volumes are there
 
@@ -71,7 +71,7 @@ To create a volume group, we have to package all physical volumes into 1 group. 
 
 Run command `sudo vgs` to check if it has been created
 
-![vg-nfs](https://github.com/Lummysloane/Devops-Project/assets/131771280/3341f874-d60a-4e58-ba58-538bd6140c48)
+![vg-nfs](https://github.com/Lummysloane/Devops-projects/assets/131771280/842bac99-0ffa-4ddf-8c51-d04e906e103a)
 
 Next step is to create 3 logical volumes lv-opt lv-apps, and lv-logs
 
@@ -81,7 +81,7 @@ To check the logical volumes that have been created, Run command `sudo lvs`
 
 To also view the partitioning, Run command: `lsblk`
 
-![lv-nfs](https://github.com/Lummysloane/Devops-Project/assets/131771280/34ddad61-db17-491f-9588-2adf233dae6b) 
+![lv-nfs](https://github.com/Lummysloane/Devops-projects/assets/131771280/e4ea08aa-c72d-49bf-8a1c-545551fbbd9b)
 
 Next step is to format the disk as xfs instead of ext4. Run the command: 
 
@@ -91,7 +91,7 @@ Next step is to format the disk as xfs instead of ext4. Run the command:
 
 `sudo mkfs -t xfs /dev/webdata-vg/lv-opt`
 
-![mkfs](https://github.com/Lummysloane/Devops-Project/assets/131771280/6ae16244-17db-4a79-b6a7-213202694ead)
+![mkfs](https://github.com/Lummysloane/Devops-projects/assets/131771280/5baa4a88-14e5-4b79-b5dd-c8fbc2694834)
 
 We have to create mount points on /mnt directory for the logical volumes as follow: `sudo mkdir /mnt/apps` `sudo mkdir /mnt/logs` `sudo mkdir /mnt/opt` 
 
@@ -99,9 +99,9 @@ To mount the logical volumes, run the below command:
 
 `sudo mount /dev/webdata-vg/lv-apps /mnt/apps` `sudo mount /dev/webdata-vg/lv-logs /mnt/logs` `sudo mount /dev/webdata-vg/lv-opt /mnt/opt`
 
-![mount](https://github.com/Lummysloane/Devops-Project/assets/131771280/b0e2888a-00d2-4d02-a56d-a173bfb6b993)
+![mount](https://github.com/Lummysloane/Devops-projects/assets/131771280/099a3bcf-8146-4218-8b45-387c8f7db3f9)
 
-![mkdirmnt](https://github.com/Lummysloane/Devops-Project/assets/131771280/8cb5826a-5170-4eb9-92a5-34e863ae509f)
+![mkdirmnt](https://github.com/Lummysloane/Devops-projects/assets/131771280/9ec88678-1955-4260-ae00-9b9c98bf525a)
 
 Install NFS server, configure it to start on reboot and make sure it is up and running. Run the below commands to configure:
 
@@ -115,7 +115,7 @@ Install NFS server, configure it to start on reboot and make sure it is up and r
 
 `sudo systemctl status nfs-server.service`
 
-![installnfs](https://github.com/Lummysloane/Devops-Project/assets/131771280/a26ac5b1-6286-4e39-a998-123e72cfb02d)
+![installnfs](https://github.com/Lummysloane/Devops-projects/assets/131771280/4f65e5c0-c689-45a6-9544-01a19695e07a)
 
 Export the mounts for webservers’ subnet cidr to connect as clients.
 
@@ -127,7 +127,7 @@ Run the below command to make sure we set up permission that will allow our Web 
 
 `sudo chown -R nobody: /mnt/opt`
 
-![chown](https://github.com/Lummysloane/Devops-Project/assets/131771280/ce964f0e-38bd-473b-acd4-8f7a38f010aa)
+![chown](https://github.com/Lummysloane/Devops-projects/assets/131771280/19216e37-734a-4d7e-9493-e40b0b144539)
 
 NFS needs to be restarted after configuration:
 
@@ -156,7 +156,7 @@ Grant all privileges on tooling to webaccess @ subnet cidr
 
 flush privileges
 
-![mysqldb](https://github.com/Lummysloane/Devops-Project/assets/131771280/ac0b144f-3d8b-48c2-b39d-f5b0c427956e)
+![mysqldb](https://github.com/Lummysloane/Devops-projects/assets/131771280/e2a80095-c6e5-4065-8555-d07a70ce9f7c)
 
 To configure access to NFS for clients within the same subnet, use text editor **vi** and run the command below:
 
@@ -170,15 +170,15 @@ Run the below command to export it so that the webserver will be able to see it 
 
 `sudo exportfs -arv`
 
-![exporting](https://github.com/Lummysloane/Devops-Project/assets/131771280/b5a1708a-6d0e-462c-8abf-e655acbb42f0)
+![exporting](https://github.com/Lummysloane/Devops-projects/assets/131771280/4f556014-32a0-4285-ad02-0efc08c26f27)
 
 To check the ports used by nfs, run command `rpcinfo -p | grep nfs`
 
-![whichportnfs](https://github.com/Lummysloane/Devops-Project/assets/131771280/4ed42420-cf14-4caa-83b9-1c4a8a032ec7)
+![whichportnfs](https://github.com/Lummysloane/Devops-projects/assets/131771280/bb685c79-9142-4b12-bff4-28d52dedb723)
 
 In order for NFS server to be accessible from your client, you must also open following ports: TCP 111, UDP 111, UDP 2049
 
-![NFSports](https://github.com/Lummysloane/Devops-Project/assets/131771280/e98e56f0-73a4-4e66-9065-8a969b24d368)
+![NFSports](https://github.com/Lummysloane/Devops-projects/assets/131771280/ba53f911-9831-4117-a569-c7b63c5d63b2)
 
 We need to make sure that our Web Servers can serve the same content from the NFS server and Mysql database
 
@@ -186,13 +186,13 @@ To install NFS client, run the below command:
 
 `sudo yum install nfs-utils nfs4-acl-tools -y`
 
-![nfsutilwebserver](https://github.com/Lummysloane/Devops-Project/assets/131771280/19856616-bfb8-49ad-a7a8-f20785240d85)
+![nfsutilwebserver](https://github.com/Lummysloane/Devops-projects/assets/131771280/2f6fc8e9-5769-4fd0-9581-3e601f01fe5d)
 
 Next step is to Mount /var/www/ and target the NFS server’s export for apps. 
 
 make directory `sudo mkdir /var/www` and mount /var/www by running command `sudo mount -t nfs -o rw,nosuid <NFS-Server-Private-IP-Address>:/mnt/apps /var/www`
 
-![sudomountnfs](https://github.com/Lummysloane/Devops-Project/assets/131771280/60622cce-0853-42e4-9b4e-695ef2ce4f67)
+![sudomountnfs](https://github.com/Lummysloane/Devops-projects/assets/131771280/66bf81bd-694a-4a25-89c0-040a5c5ba50e)
 
 Verify that NFS was mounted successfully by running command `df -h`
 
@@ -202,13 +202,13 @@ Next step is to install Apache on webserver. Without the apache, the webserver w
 
 `sudo yum install httpd -y`
 
-![installhttpd](https://github.com/Lummysloane/Devops-Project/assets/131771280/0df66070-6921-4fb5-9580-89daa2bfd6e0)
+![installhttpd](https://github.com/Lummysloane/Devops-projects/assets/131771280/72a19004-4610-450d-ae1a-015f7f02312f)
 
 Next step is to Fork the tooling source code from Darey.io Github Account to your Github account by running the below command
 
 `git clone https://github.com/darey-io/tooling.git`
 
-![gitclone](https://github.com/Lummysloane/Devops-Project/assets/131771280/b05b9a11-db76-421d-b7e8-efa57461d091)
+![gitclone](https://github.com/Lummysloane/Devops-projects/assets/131771280/8cc6eee4-d6cb-4d83-addf-710358fc70f6)
 
 We have to deploy website's code to the webserver.
 
@@ -222,13 +222,13 @@ If you encounter 403 Error – check permissions to your /var/www/html folder an
 
 Enable setenforce by running command; `sudo setenforce 0' and disabling selinux by running command `sudo vi /etc/sysconfig/selinux`
 
-![setenforce](https://github.com/Lummysloane/Devops-Project/assets/131771280/9bbb523f-9794-45e5-88e1-df458099992a)
+![setenforce](https://github.com/Lummysloane/Devops-projects/assets/131771280/e84299dc-5715-4bc6-a4dc-d5a6a333d16b)
 
 To check if Apache is working,  run command;
 
 `sudo systemctl start http` and `sudo systemctl status http`
 
-![restarthttpd](https://github.com/Lummysloane/Devops-Project/assets/131771280/1bdd4227-92ba-4547-9d19-26cd7ea9f754)
+![restarthttpd](https://github.com/Lummysloane/Devops-projects/assets/131771280/3ca6895d-30e7-4bbf-985b-cdefc25b9ac9)
 
 To update the website’s configuration to connect to the database, open file `sudo vi /var/www/html/functions.php` and edit the file
 
@@ -238,13 +238,13 @@ To install php dependencies on the website, run the below command;
 
 `sudo yum install http://d1.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm`
 
-![epelrelease](https://github.com/Lummysloane/Devops-Project/assets/131771280/69aaae77-6b05-4bff-a0d3-dd68d1d86d63)
+![epelrelease](https://github.com/Lummysloane/Devops-projects/assets/131771280/c71c5624-f020-455a-8501-e01252328978)
 
 `sudo yum install yum-utils http://rpms.remirepo.net/enterprise/remi-release-8.rpm`
 
 `sudoyum module list php`
 
-![webserver4php](https://github.com/Lummysloane/Devops-Project/assets/131771280/e835e2e5-ff63-4ad0-9d87-1118ba17ca30)
+![webserver4php](https://github.com/Lummysloane/Devops-projects/assets/131771280/dd532e5b-06df-4a7d-9c26-753264ffd6a1)
 
 `sudo yum module reset php`
 
@@ -258,15 +258,16 @@ To install php dependencies on the website, run the below command;
 
 `setsebool -P httpd_execmem 1`
 
-![enablephp](https://github.com/Lummysloane/Devops-Project/assets/131771280/607b6755-d680-4d08-8079-7318779bd50e)
+![enablephp](https://github.com/Lummysloane/Devops-projects/assets/131771280/f7ad592d-9b55-4d76-8761-7e4f839835dc)
 
-![dnfinstallphp](https://github.com/Lummysloane/Devops-Project/assets/131771280/84724e1a-ffef-4564-8e40-32af64742b75)
+![dnfinstallphp](https://github.com/Lummysloane/Devops-projects/assets/131771280/f85c1226-5a29-4211-8733-2c6d72c8e1c9)
 
-![run setsebool](https://github.com/Lummysloane/Devops-Project/assets/131771280/5bd9d56b-dcbb-49d9-985b-6065d5611b8e)
+![run setsebool](https://github.com/Lummysloane/Devops-projects/assets/131771280/0c6f9e66-b7a9-40cc-8f62-0620cf35ff1b)
 
-![loginpage](https://github.com/Lummysloane/Devops-Project/assets/131771280/12e9ef5b-c512-4868-9761-63604208e06f)
+![loginpage](https://github.com/Lummysloane/Devops-projects/assets/131771280/936f7385-f1af-463c-bf33-9c11ac0e486a)
 
-![loginpage2](https://github.com/Lummysloane/Devops-Project/assets/131771280/c484fd8c-8668-45fe-8a72-7c9128aa3567)
+![loginpage2](https://github.com/Lummysloane/Devops-projects/assets/131771280/3c27e298-abc5-4eae-989b-0b9384cbd2a1)
+
 
 
 
