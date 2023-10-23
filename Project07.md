@@ -15,8 +15,8 @@
 5. Code Repository: GitHub
 
 ## 3-tier Web Application Architecture with a single Database and NFS server as a shared files storage 
-   
-![Screenshot 2023-08-16 at 15 04 54](https://github.com/Lummysloane/Devops-Project/assets/131771280/d2bdc573-8092-49c1-b4c9-b39a3972d0cd)
+
+![image](https://github.com/Lummysloane/Devops-projects/assets/131771280/0b5008a3-74c7-40e8-a89e-63d12b348f71)
 
 A Typical 3 Tier Server Architecture. Tier 1—Web Server, Tier 2—Application Server, Tier 3— DataBase Server. PicoServer is targeted at Tier 1. An example of an internet transaction is shown. When a client request comes in for a Java Servlet Page, it is first received by the front end server—Tier 1. Tier 1 recognizes a Java Servlet Page that must be handled and initiates a request to Tier 2 typically using Remote Message Interfaces (RMI). Tier 2 initiates a database query on the Tier 3 servers, which in turn generate the results and send the relevant information up the chain all the way to Tier 1. Finally, Tier 1 sends the generated content to the client.  
 
