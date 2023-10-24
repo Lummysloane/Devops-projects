@@ -29,3 +29,34 @@ Install Apache Load balancer on the new server running the below command:
 ![libxm](installlibxlm2.png)
 
 ![install apache2](systemctlapache2.png)
+
+The below modules will enable apache2 to work and be configured properly when installed,
+
+`sudo a2enmod rewrite`
+`sudo a2enmod proxy`
+`sudo a2enmod proxy_balancer`
+`sudo a2enmod proxy_http`
+`sudo a2enmod headers`
+`sudo a2enmod lbmethod_bytraffic`
+
+![a2enmod](azenmod.png)
+
+To make sure apache is up and running, run command `sudo systemctl status apache2`
+
+We have to configure LoadBalancer. To do that we have to open up the vi editor using the below command;
+
+'sudo vi /etc/apache2/sites-available/000-default.conf`
+
+Edit the folder by pasting the below in it:
+
+> <Proxy "balancer://mycluster">
+               BalancerMember http://<WebServer1-Private-IP-Address>:80 loadfactor=5 timeout=1
+               BalancerMember http://<WebServer2-Private-IP-Address>:80 loadfactor=5 timeout=1
+               ProxySet lbmethod=bytraffic
+               # ProxySet lbmethod=byrequests
+        </Proxy>
+
+        ProxyPreserveHost On
+        ProxyPass / balancer://mycluster/
+        ProxyPassReverse / balancer://mycluster/
+
