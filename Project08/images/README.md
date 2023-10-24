@@ -18,3 +18,14 @@ Open TCP port 80 on the ubuntu server EC2 instance
 
 ![Open Port80](<port 80.png>)
 
+Install Apache Load balancer on the new server running the below command:
+
+`sudo apt update` 
+
+`sudo apt install apache2 -y`
+
+`sudo apt-get install libxml2-dev `
+
+![libxm](installlibxlm2.png)
+
+![install apache2](systemctlapache2.png)
