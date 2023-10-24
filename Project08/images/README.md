@@ -45,7 +45,7 @@ To make sure apache is up and running, run command `sudo systemctl status apache
 
 We have to configure LoadBalancer. To do that we have to open up the vi editor using the below command;
 
-'sudo vi /etc/apache2/sites-available/000-default.conf`
+`sudo vi /etc/apache2/sites-available/000-default.conf`
 
 Edit the folder by pasting the below in it:
 
@@ -61,3 +61,8 @@ Edit the folder by pasting the below in it:
         ProxyPassReverse / balancer://mycluster/
 
 The above configuration is meant for loadbalancer to map the IP addresses such that webservers can be reached from the loadbalancer.
+Loadbalancing will distribute incoming load between the Web Servers according to current traffic load.
+
+To verify that the configuration works – try to access your LB’s public IP address or Public DNS name from the browser by running this command; `http://18.169.192.99/index.php`
+
+![Alt text](<load balancer.png>)
