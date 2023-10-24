@@ -13,3 +13,8 @@ A load balancer acts as the “traffic cop” sitting in front of your servers a
 The first thing we need to do is create an ubuntu server EC2 instance
 
 ![Alt text](createservers.png)
+
+Open TCP port 80 on the ubuntu server EC2 instance 
+
+![Open Port80](<port 80.png>)
+
