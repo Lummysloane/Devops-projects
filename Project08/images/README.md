@@ -60,3 +60,4 @@ Edit the folder by pasting the below in it:
         ProxyPass / balancer://mycluster/
         ProxyPassReverse / balancer://mycluster/
 
+The above configuration is meant for loadbalancer to map the IP addresses such that webservers can be reached from the loadbalancer.
