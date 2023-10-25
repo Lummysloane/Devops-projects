@@ -61,6 +61,7 @@ Edit the folder by pasting the below in it:
         ProxyPass / balancer://mycluster/
         ProxyPassReverse / balancer://mycluster/
 ```        
+#Restart apache server
 
 The above configuration is meant for loadbalancer to map the IP addresses such that webservers can be reached from the loadbalancer.
 Loadbalancing will distribute incoming load between the Web Servers according to current traffic load.
@@ -68,3 +69,44 @@ Loadbalancing will distribute incoming load between the Web Servers according to
 To verify that the configuration works – try to access your LB’s public IP address or Public DNS name from the browser by running this command; `http://18.169.192.99/index.php`
 
 ![Alt text](<load balancer.png>)
+
+Open two ssh/Putty consoles for both Web Servers and run following command:
+
+`sudo tail -f /var/log/httpd/access_log`
+
+If you have configured everything correctly – your users will not even notice that their requests are served by more than one server.
+
+## Optional Step – Configure Local DNS Names Resolution
+
+```
+#Open this file on your LB server
+
+sudo vi /etc/hosts
+
+#Add 2 records into this file with Local IP address and arbitrary name for both of your Web Servers
+
+<WebServer1-Private-IP-Address> Web1
+<WebServer2-Private-IP-Address> Web2
+```
+
+Now you can update your LB config file with those names instead of IP addresses.
+
+```
+BalancerMember http://Web1:80 loadfactor=5 timeout=1
+BalancerMember http://Web2:80 loadfactor=5 timeout=1
+```
+
+
+You can try to curl your Web Servers from LB locally curl
+
+ http://Web1 or curl http://Web2 – it shall work.
+
+![Alt text](httpweb4.png)
+
+Remember, this is only internal configuration and it is also local to your LB server, these names will neither be ‘resolvable’ from other servers internally nor from the Internet.
+
+### THANK YOU!!!!
+
+
+
+
