@@ -49,7 +49,8 @@ We have to configure LoadBalancer. To do that we have to open up the vi editor u
 
 Edit the folder by pasting the below in it:
 
-> <Proxy "balancer://mycluster">
+```
+ <Proxy "balancer://mycluster">
                BalancerMember http://<WebServer1-Private-IP-Address>:80 loadfactor=5 timeout=1
                BalancerMember http://<WebServer2-Private-IP-Address>:80 loadfactor=5 timeout=1
                ProxySet lbmethod=bytraffic
@@ -59,6 +60,7 @@ Edit the folder by pasting the below in it:
         ProxyPreserveHost On
         ProxyPass / balancer://mycluster/
         ProxyPassReverse / balancer://mycluster/
+```        
 
 The above configuration is meant for loadbalancer to map the IP addresses such that webservers can be reached from the loadbalancer.
 Loadbalancing will distribute incoming load between the Web Servers according to current traffic load.
