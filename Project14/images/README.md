@@ -105,3 +105,5 @@ NOTE: This is still NOT a cloud-focus project yet. AWS cloud end to end project 
 
 To minimize the cost of cloud servers, you don not have to create all the servers at once, simply spin up a minimal server set up as you progress through the project implementation and have reached a need for more.
 
+Let us start by launcjing a Jenkins server (Redhat RHEL8 instance)
+
