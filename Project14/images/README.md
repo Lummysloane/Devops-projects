@@ -182,3 +182,34 @@ Artifactory is a product by JFrog that serves as a binary repository manager. Th
 
 Let us start by configuring Ansible For Jenkins Deployment
 
+![ansibleinstall](installansible.png)
+
+install Git on the Ansible server
+
+![gitinstall](<git install.png>)
+
+clone the ansible config mgt repo to the new ansible instance server
+
+![Alt text](clone.png)
+
+Install Epel and Remi Repo Release as well as Java
+
+![installepel](installepel.png)
+
+updating bash profile to export java for ease of usage
+
+![bash1](bash1.png)
+
+![bash2](bash2.png)
+
+![bash3](bash3.png)
+
+Now installing Jenkins
+
+![jenkins](jenkins1.png)
+
+![jenkins](jenkins2.png)
+
+log in to Jenkins on browser using public Ip and password from terminal
+
+![jenkinsbrowser](jenkinsbrowser.png)
