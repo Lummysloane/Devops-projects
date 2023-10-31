@@ -105,5 +105,65 @@ NOTE: This is still NOT a cloud-focus project yet. AWS cloud end to end project 
 
 To minimize the cost of cloud servers, you don not have to create all the servers at once, simply spin up a minimal server set up as you progress through the project implementation and have reached a need for more.
 
-Let us start by launcjing a Jenkins server (Redhat RHEL8 instance)
+## **Pre-requisites**
+
+Will be making use of AWS virtual machines for this and will require 6 servers for the project which includes: Nginx Server: This would act as the reverse proxy server to our site and tool.
+
+**Jenkins server:** To be used to implement your CI/CD workflows or pipelines. Select a t2.medium at least, Ubuntu 20.04 and Security group should be open to port 8080
+
+**SonarQube server:** To be used for Code quality analysis. Select a t2.medium at least, Ubuntu 20.04 and Security group should be open to port 9000
+
+**Artifactory server:** To be used as the binary repository where the outcome of your build process is stored. Select a t2.medium at least and Security group should be open to port 8081
+
+**Database server:** To server as the databse server for the Todo application
+
+**Todo webserver:** To host the Todo web application.
+
+Ansible Inventory should look like this
+
+```
+├── ci
+├── dev
+├── pentest
+├── pre-prod
+├── prod
+├── sit
+└── uat
+```
+
+ci inventory file
+
+```
+[jenkins]
+<Jenkins-Private-IP-Address>
+
+[nginx]
+<Nginx-Private-IP-Address>
+
+[sonarqube]
+<SonarQube-Private-IP-Address>
+
+[artifact_repository]
+<Artifact_repository-Private-IP-Address>
+```
+
+dev Inventory file
+
+```
+[tooling]
+<Tooling-Web-Server-Private-IP-Address>
+
+[todo]
+<Todo-Web-Server-Private-IP-Address>
+
+[nginx]
+<Nginx-Private-IP-Address>
+
+[db:vars]
+ansible_user=ec2-user
+ansible_python_interpreter=/usr/bin/python
+
+[db]
+<DB-Server-Private-IP-Address>
+```
 
