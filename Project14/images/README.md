@@ -213,3 +213,75 @@ Now installing Jenkins
 log in to Jenkins on browser using public Ip and password from terminal
 
 ![jenkinsbrowser](jenkinsbrowser.png)
+
+Both SIT – For System Integration Testing and UAT – User Acceptance Testing do not require a lot of extra installation or configuration. They are basically the webservers holding our applications. But Pentest – For Penetration testing is where we will conduct security related tests, so some other tools and specific configurations will be needed. In some cases, it will also be used for Performance and Load testing. Otherwise, that can also be a separate environment on its own. It all depends on decisions made by the company and the team running the show.
+
+What we want to achieve, is having Nginx to serve as a reverse proxy for our sites and tools. Each environment setup is represented in the below table and diagrams
+
+![Alt text](263452962-2b6861de-f234-420d-a277-fd4e10372355.png)
+
+![CI ](<CI environment.png>)
+
+![environment](ENVIRONMENT.png)
+
+### Observations:
+
+You will notice that in the pentest inventory file, we have introduced a new concept pentest:children This is because, we want to have a group called pentest which covers Ansible execution against both pentest-todo and pentest-tooling simultaneously. But at the same time, we want the flexibility to run specific Ansible tasks against an individual group.
+
+The db group has a slightly different configuration. It uses a RedHat/Centos Linux distro. Others are based on Ubuntu (in this case user is ubuntu). Therefore, the user required for connectivity and path to python interpreter are different. If all your environment is based on Ubuntu, you may not need this kind of set up. Totally up to you how you want to do this. Whatever works for you is absolutely fine in this scenario.
+
+This makes us to introduce another Ansible concept called group_vars. With group vars, we can declare and set variables for each group of servers created in the inventory file.
+
+For example, If there are variables we need to be common between both pentest-todo and pentest-tooling, rather than setting these variables in many places, we can simply use the group_vars for pentest. Since in the inventory file it has been created as pentest:children Ansible recognizes this and simply applies that variable to both children.
+
+### Configuring Ansible For Jenkins Deployment
+
+In previous projects, you have been launching Ansible commands manually from a CLI. Now, with Jenkins, we will start running Ansible from Jenkins UI.
+
+To do this,
+
+1. Navigate to Jenkins URL
+
+2. Install & Open Blue Ocean Jenkins Plugin
+
+3. Create a new pipeline
+
+![new pipeline](pipeline.png)
+
+4. Select Github
+
+![github](selectgithub.png)
+
+5. Connect Jenkins with GitHub
+
+6. Login to GitHub & Generate an Access Token
+
+7. Copy Access Tokena
+
+![access](access.png)
+
+8. Paste the token and connect
+
+9.  Create a new Pipeline
+
+![administartion](administration.png)
+
+At this point you may not have a Jenkinsfile in the Ansible repository, so Blue Ocean will attempt to give you some guidance to create one. But we do not need that. We will rather create one ourselves. So, click on Administration to exit the Blue Ocean console.
+
+### **Let us create our Jenkinsfile**
+
+Inside the Ansible project, create a new directory `deploy` and start a new file `Jenkinsfile` inside the directory.
+
+![jenkinsfile](jenkinsfile.png)
+
+Add the code snippet below to start building the `Jenkinsfile` gradually. This pipeline currently has just one stage called Build and the only thing we are doing is using the `shell script` module to echo `Building Stage`
+
+
+
+
+
+
+
+
+
+
