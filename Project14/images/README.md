@@ -276,6 +276,86 @@ Inside the Ansible project, create a new directory `deploy` and start a new file
 
 Add the code snippet below to start building the `Jenkinsfile` gradually. This pipeline currently has just one stage called Build and the only thing we are doing is using the `shell script` module to echo `Building Stage`
 
+```
+pipeline {
+    agent any
+
+  stages {
+    stage('Build') {
+      steps {
+        script {
+          sh 'echo "Building Stage"'
+        }
+      }
+    }
+    }
+}
+```
+
+Now go back into the Ansible pipeline in Jenkins, and select configure
+
+![ansibleconfig](<configure ansible-config.png>)
+
+Back to the pipeline again, this time click "Build now"
+
+![buildnow](buildnow.png)
+
+This will trigger a build and you will be able to see the effect of our basic `Jenkinsfile` configuration by going through the console output of the build.
+
+To really appreciate and feel the difference of Cloud Blue UI, it is recommended to try triggering the build again from Blue Ocean interface.
+
+1. Click on Blue Ocean
+
+2. Select your project
+
+3. Click on the play button against the branch
+
+![echo](<echo building stage.png>)
+
+Let us see this in action.
+
+1. Create a new git branch and name it `feature/jenkinspipeline-stages`
+
+2. Currently we only have the `Build` stage. Let us add another stage called `Test`. Paste the code snippet below and push the new changes to GitHub.
+
+```
+   pipeline {
+    agent any
+
+  stages {
+    stage('Build') {
+      steps {
+        script {
+          sh 'echo "Building Stage"'
+        }
+      }
+    }
+
+    stage('Test') {
+      steps {
+        script {
+          sh 'echo "Testing Stage"'
+        }
+      }
+    }
+    }
+}
+```
+
+3. To make your new branch show up in Jenkins, we need to tell Jenkins to scan the repository.
+
+4. Navigate to the Ansible project and click on "Scan repository now"
+
+5. Refresh the page and both branches will start building automatically. You can go into Blue Ocean and see both branches there too.
+
+6. In Blue Ocean, you can now see how the Jenkinsfile has caused a new step in the pipeline launch build for the new branch
+
+![featurejenkins](feature-jenkinspipeline.png)
+
+
+
+
+
 
 
 
