@@ -653,6 +653,107 @@ stage('Plot Code Coverage Report') {
 
 ![Plotcode](PLOTCODE.png)
 
+![phpunit](<install phpunit.png>)
+
+You should now see a Plot menu item on the left menu. Click on it to see the charts. (The analytics may not mean much to you as it is meant to be read by developers. So, you need not worry much about it – this is just to give you an idea of the real-world implementation).
+
+![plotcode](plotcodepipeline.png)
+
+![phpplots](phplocplots.png)
+
+![linesofcode](lineofcode.png)
+
+Bundle the application code for into an artifact (archived package) upload to Artifactory
+
+`Install Zip: Sudo apt install zip -y`
+```
+
+stage ('Package Artifact') {
+    steps {
+            sh 'zip -qr php-todo.zip ${WORKSPACE}/*'
+     }
+    }
+
+  Publish the resulted artifact into Artifactory making sure to specify the target as the name of the artifactory repository you created earlier
+
+  stage ('Upload Artifact to Artifactory') {
+          steps {
+            script { 
+                 def server = Artifactory.server 'artifactory-server'                 
+                 def uploadSpec = """{
+                    "files": [
+                      {
+                       "pattern": "php-todo.zip",
+                       "target": "<name-of-artifact-repository>/php-todo",
+                       "props": "type=zip;status=ready"
+
+                       }
+                    ]
+                 }""" 
+
+                 server.upload spec: uploadSpec
+               }
+            }
+
+        }
+```
+
+![php-todo](php-todo2.png)
+
+Deploy the application to the dev environment by launching Ansible pipeline. Ensure you update your inventory/dev with the Private IP of your TODO-server and your site.yml file is updated with todo play.
+
+```
+stage ('Deploy to Dev Environment') {
+    steps {
+    build job: 'ansible-project/main', parameters: [[$class: 'StringParameterValue', name: 'env', value: 'dev']], propagate: false, wait: true
+    }
+  }
+```
+
+![php](php-todo.png)
+
+![index](index.png)
+
+The build job used in this step tells Jenkins to start another job. In this case it is the ansible-project job, and we are targeting the main branch. Hence, we have ansible-project/main. Since the Ansible project requires parameters to be passed in, we have included this by specifying the parameters section. The name of the parameter is env and its value is dev. Meaning, deploy to the Development environment.
+
+But how are we certain that the code being deployed has the quality that meets corporate and customer requirements? Even though we have implemented Unit Tests and Code Coverage Analysis with phpunit and phploc, we still need to implement Quality Gate to ensure that ONLY code with the required code coverage, and other quality standards make it through to the environments.
+
+To achieve this, we need to configure SonarQube – An open-source platform developed by SonarSource for continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities.
+
+
+## SONARQUBE INSTALLATION
+
+Before we start getting hands on with SonarQube configuration, it is incredibly important to understand a few concepts:
+
+Software Quality – The degree to which a software component, system or process meets specified requirements based on user needs and expectations.
+
+Software Quality Gates – Quality gates are basically acceptance criteria which are usually presented as a set of predefined quality criteria that a software development project must meet in order to proceed from one stage of its lifecycle to the next one.
+
+SonarQube is a tool that can be used to create quality gates for software projects, and the ultimate goal is to be able to ship only quality software code.
+
+Despite that DevOps CI/CD pipeline helps with fast software delivery, it is of the same importance to ensure the quality of such delivery. Hence, we will need SonarQube to set up Quality gates. In this project we will use predefined Quality Gates (also known as The Sonar Way). Software testers and developers would normally work with project leads and architects to create custom quality gates.
+
+# Install SonarQube on Ubuntu 20.04 With PostgreSQL as Backend Database
+
+![sonaqube](installsonaqube.png)
+
+CONFIGURE SONARQUBE
+
+![sonarqube](sonar.png)
+
+![Alt text](sonar2.png)
+
+![Alt text](installsonar.png)
+
+Access SonarQube
+
+To access SonarQube using browser, type server’s IP address followed by port 9000
+
+http://server_IP:9000 OR http://localhost:9000
+
+![Alt text](sonarqube.png)
+
+### CONFIGURE SONARQUBE AND JENKINS FOR QUALITY GATE
 
 
 
