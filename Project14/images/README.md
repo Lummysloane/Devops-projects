@@ -755,6 +755,131 @@ http://server_IP:9000 OR http://localhost:9000
 
 ### CONFIGURE SONARQUBE AND JENKINS FOR QUALITY GATE
 
+SONARQUBE INSTALLATION
+SonarQube is a tool that can be used to create quality gates for software projects, and the ultimate goal is to be able to ship only quality software code.
+
+Despite that DevOps CI/CD pipeline helps with fast software delivery, it is of the same importance to ensure the quality of such delivery. Hence, we will need SonarQube to set up Quality gates. In this project we will use predefined Quality Gates (also known as The Sonar Way). Software testers and developers would normally work with project leads and architects to create custom quality gates.
+
+Setting Up SonarQube
+On the Ansible config management pipeline, execute the ansible playbook script to install sonarqube via a preconfigured sonarqube ansible role.
+
+![sonarplugs](sonarplugs1.png)
+
+Navigate to configure system in Jenkins. Add SonarQube server as shown below:
+
+![sonarplug2](sonarplugs2.png)
+
+Manage Jenkins > Configure System
+
+Generate authentication token in SonarQube
+
+User > My Account > Security > Generate Tokens
+
+![sonarkey](sonarqubekey.png)
+
+Configure Quality Gate Jenkins Webhook in SonarQube – The URL should point to your Jenkins server http://{JENKINS_HOST}/sonarqube-webhook/
+
+Administration > Configuration > Webhooks > Create
+
+![sonarkey](sonarkey2.png)
+
+Setup SonarQube scanner from Jenkins – Global Tool Configuration
+
+![sonarscanner](sonarscanner.png)
+
+Manage Jenkins > Global Tool Configuration
+
+Update Jenkins Pipeline to include SonarQube scanning and Quality Gate
+
+Below is the snippet for a Quality Gate stage in Jenkinsfile.
+
+```
+stage('SonarQube Quality Gate') {
+        environment {
+            scannerHome = tool 'SonarQubeScanner'
+        }
+        steps {
+            withSonarQubeEnv('sonarqube') {
+                sh "${scannerHome}/bin/sonar-scanner"
+            }
+
+        }
+    }
+```    
+
+![sonarplot](sonarplot.png)
+
+NOTE: The above step will fail because we have not updated `sonar-scanner.properties
+
+![qualitygate](qualitygate.png)
+
+Configure sonar-scanner.properties – From the step above, Jenkins will install the scanner tool on the Linux server. You will need to go into the tools directory on the server to configure the properties file in which SonarQube will require to function during pipeline execution. 
+
+`cd /var/lib/jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/SonarQubeScanner/conf/`
+
+Open sonar-scanner.properties file
+
+`sudo vi sonar-scanner.properties`
+
+Add configuration related to php-todo project
+
+```
+sonar.host.url=http://<SonarQube-Server-IP-address>:9000
+sonar.projectKey=php-todo
+#----- Default source code encoding
+sonar.sourceEncoding=UTF-8
+sonar.php.exclusions=**/vendor/**
+sonar.php.coverage.reportPaths=build/logs/clover.xml
+sonar.php.tests.reportPath=build/logs/junit.xml
+
+```
+
+![addconfig](addconfig.png)
+
+![sonarpipeline](sonarcubepipeline.png)
+
+HINT: To know what exactly to put inside the sonar-scanner.properties file, SonarQube has a configurations page where you can get some directions.
+
+A brief explanation of what is going on the the stage – set the environment variable for the scannerHome use the same name used when you configured SonarQube Scanner from Jenkins Global Tool Configuration. If you remember, the name was SonarQubeScanner. Then, within the steps use shell to run the scanner from bin directory.
+
+To further examine the configuration of the scanner tool on the Jenkins server – navigate into the tools directory
+
+`cd /var/lib/jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/SonarQubeScanner/bin`
+
+## End-to-End Pipeline Overview
+
+Conditionally deploy to higher environments In the real world, developers will work on feature branch in a repository (e.g., GitHub or GitLab). There are other branches that will be used differently to control how software releases are done. You will see such branches as:
+
+Develop Master or Main (The * is a place holder for a version number, Jira Ticket name or some description. It can be something like Release-1.0.0) Feature/* Release/* Hotfix/* etc.
+
+There is a very wide discussion around release strategy, and git branching strategies which in recent years are considered under what is known as GitFlow (Have a read and keep as a bookmark – it is a possible candidate for an interview discussion, so take it seriously!)
+
+Assuming a basic gitflow implementation restricts only the develop branch to deploy code to Integration environment like sit.
+
+Let us update our Jenkinsfile to implement this:
+
+First, we will include a When condition to run Quality Gate whenever the running branch is either develop, hotfix, release, main, or master
+
+```
+stage('SonarQube Quality Gate') {
+      when { branch pattern: "^develop*|^hotfix*|^release*|^main*", comparator: "REGEXP"}
+        environment {
+            scannerHome = tool 'SonarQubeScanner'
+        }
+        steps {
+            withSonarQubeEnv('sonarqube') {
+                sh "${scannerHome}/bin/sonar-scanner -Dproject.settings=sonar-project.properties"
+            }
+            timeout(time: 1, unit: 'MINUTES') {
+                waitForQualityGate abortPipeline: true
+            }
+        }
+          }
+```
+
+![sonarquality](sonarqubequality.png)
+
+
 
 
 
